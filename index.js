@@ -1,5 +1,7 @@
 'use strict'
 
+console.log(`Running DistubeBot ${require('./package.json').version}`)
+
 require('dotenv').config()
 
 const Discord = require('discord.js')

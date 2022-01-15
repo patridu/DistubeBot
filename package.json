@@ -1,6 +1,6 @@
 {
   "name": "distubebot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A discord music bot using DisTube.js",
   "main": "index.js",
   "scripts": {
