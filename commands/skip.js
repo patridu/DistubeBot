@@ -10,9 +10,9 @@ const Distube = require('distube')
 module.exports = (distube, message, argument) => {
 	
 	let queue = distube.getQueue(message)
+	let amount = parseInt(argument)
 
-	// If argument can be parsed to an int without compromise, set it as number of songs to skip
-	let amount = /^\d+$/.test(argument) && parseInt(argument) > 0 ? parseInt(argument) : 1;
+	if (!Number.isInteger(amount) || amount <= 0) amount = 1
 
 	queue?.jump(amount).catch(e => {
 

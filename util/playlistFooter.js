@@ -1,10 +1,9 @@
 'use strict'
 const Distube = require('distube')
-const IsArray = require('isarray')
 
 /**
  * Shorten a string to a specific length
- * @param {string} value 
+ * @param {string} value The string to be shortened
  * @param {number} length 
  * @returns {string} The shortened string
  */
@@ -30,28 +29,42 @@ const formatTime = (value) => {
 	return hours === 0 ? `${minutes}:${seconds}` : `${hours}:${minutes.padStart(2, '0')}:${seconds}`
 }
 
-const numberEmojis = [ '▶️', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣' ]
+const numberEmojis = [ '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣' ]
+
+/**
+ * Get fitting emoji for this song
+ * @param {number} index 
+ * @param {boolean} paused 
+ * @returns {string} The wanted emoji
+ */
+const getEmoji = (index, paused) => {
+
+	if (index === 0) return paused ? '⏸\uFE0F' : '▶️'
+	if (index > 0 && index <= numberEmojis.length) return numberEmojis[index - 1]
+
+	return '*️⃣'
+}
 
 /**
  * Get a string representing the playlist of the specified queue, intended for use in an embed footer
- * @param {Distube.Queue} queue
+ * @param {!Distube.Queue} queue
  * @returns {string} An embed footer
  */
 module.exports = (queue) => {
 
 	// Show the playlist as far as possible until the char limit is reached
 	let footer = ''
+
 	queue.previousSongs.concat(queue.songs).every(s => {
 
 		if (!(s.name && s.uploader.name)) return false
 
-		let playingIndex = queue.songs.indexOf(s)
-		let emoji = (playingIndex < 0 || playingIndex >= numberEmojis.length) ? '*️⃣' : numberEmojis[playingIndex]
+		let emoji = getEmoji(queue.songs.indexOf(s), queue.paused)
 		emoji += ' ' + s.filters?.length > 0 ? '⚡' : '\u2800'.repeat(2)
 
 		let duration = s.duration === 0 ? 'LIVE' : formatTime(s.duration)
 
-		let toAdd = `\n${emoji}` + shortenString(`[${duration}] ${s.name}`, 45)
+		let toAdd = `${emoji}` + shortenString(`[${duration}] ${s.name}`, 45) + '\n'
 		if (footer.length + toAdd.length > 2000) return false
 
 		footer += toAdd

@@ -9,11 +9,10 @@ const Distube = require('distube')
  */
 module.exports = (distube, message, argument) => {
 	
-	let index = parseInt(argument.substring(0, 1))
 	let queue = distube.getQueue(message)
 
-	if (!queue || !Number.isInteger(index) || index < 1 || index >= Math.min(queue.songs.length, 10)) return
+	if (!queue) return
 
-	queue.songs.splice(index, 1)
-	queue.emit('addSong', queue, null) // There is no specific event for removing a song, but this should do
+	queue.pause()
+	queue.emit('addSong', queue, null) // There is no specific event for pausing, but this should do
 }

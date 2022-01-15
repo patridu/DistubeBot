@@ -13,10 +13,14 @@ module.exports = (distube, message, argument) => {
 
 	distube.search(argument).then(results => {
 
-		let songResult = new Distube.Song(results[0], message.member)
+		let songResult = new Distube.Song(results[0])
 		songResult.filters = [ 'wobble' ]
 		
-		distube.play(message, songResult).catch(e => {
+		distube.play(message.member.voice.channel, songResult, {
+			member: message.member,
+			textChannel: message.channel,
+			message
+		}).catch(e => {
 			console.log(`wobble.js: ${e.name}`);
 		})
 	}).catch(e => {
